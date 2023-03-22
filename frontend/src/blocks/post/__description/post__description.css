@@ -1,0 +1,6 @@
+.post__description {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+    align-items: center;
+}

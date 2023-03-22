@@ -1,0 +1,16 @@
+.post__like {
+    background: url(../../../images/like-button.svg) center center no-repeat;
+    background-size: contain;
+    width: 22px;
+    height: 19px;
+    border: none;
+    margin: 0 0 0 auto;
+    padding: 0;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.post__like:hover {
+    opacity: .5;
+}

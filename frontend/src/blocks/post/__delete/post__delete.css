@@ -1,0 +1,17 @@
+.post__delete {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    background: url(../../../images/delete-button.svg) center center no-repeat;
+    background-size: contain;
+    cursor: pointer;
+    width: 18px;
+    height: 19px;
+    border: none;
+    padding: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.post__delete:hover {
+    opacity: 0.6;
+}
