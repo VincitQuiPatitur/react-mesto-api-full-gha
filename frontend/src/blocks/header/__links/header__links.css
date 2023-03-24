@@ -1,0 +1,16 @@
+.header__links {
+    margin: 6px 0 0 auto;
+    position: relative;
+}
+
+@media (max-width: 1024px) {
+    .header__links {
+        margin-right: 30px;
+    }
+}
+
+@media (max-width: 767px) {
+    .header__links {
+        height: 18px;
+    }
+}

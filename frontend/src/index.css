@@ -5,6 +5,21 @@
 @import url(./blocks/page/__content/page__content.css);
 @import url(./blocks/header/header.css);
 @import url(./blocks/header/__logo/header__logo.css);
+@import url(./blocks/header/__links/header__links.css);
+@import url(./blocks/header/__menu/header__menu.css);
+@import url(./blocks/header/__menu/_active/header__menu_active.css);
+@import url(./blocks/header/__info/header__info.css);
+@import url(./blocks/header/__mail/header__mail.css);
+@import url(./blocks/header/__link/header__link.css);
+
+@import url(./blocks/registration/registration.css);
+@import url(./blocks/registration/__form/registration__form.css);
+@import url(./blocks/registration/__title/registration__title.css);
+@import url(./blocks/registration/__fieldset/registration__fieldset.css);
+@import url(./blocks/registration/__label/registration__label.css);
+@import url(./blocks/registration/__input/registration__input.css);
+@import url(./blocks/registration/__button/registration__button.css);
+@import url(./blocks/registration/__authorization-link/registration__authorization-link.css);
 
 @import url(./blocks/main/main.css);
 
@@ -37,7 +52,10 @@
 @import url(./blocks/popup/__container/popup__container.css);
 @import url(./blocks/popup/__small-container/popup__small-container.css);
 @import url(./blocks/popup/__avatar-container/popup__avatar-container.css);
+@import url(./blocks/popup/__infoTooltip-container/popup__infoTooltip-container.css);
 @import url(./blocks/popup/__close-button/popup__close-button.css);
+@import url(./blocks/popup/__icon/popup__icon.css);
+@import url(./blocks/popup/__info/popup__info.css);
 @import url(./blocks/popup/__form/popup__form.css);
 @import url(./blocks/popup/__fieldset/popup__fieldset.css);
 @import url(./blocks/popup/__title/popup__title.css);
@@ -55,3 +73,6 @@
 @import url(./blocks/popup/__image/popup__image.css);
 @import url(./blocks/popup/__caption/popup__caption.css);
 @import url(./blocks/popup/_type/popup_type_image.css);
+
+@import url(./blocks/menu/menu.css);
+@import url(./blocks/menu/_opened/menu_opened.css);

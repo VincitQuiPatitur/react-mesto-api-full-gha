@@ -1,0 +1,17 @@
+.registration__label {
+    width: 100%;
+}
+
+.registration__label:first-child {
+    margin-bottom: 30px;
+}
+
+.registration__label:last-child {
+    margin-bottom: 216px;
+}
+
+@media (max-width: 767px) {
+    .registration__label:last-child {
+        margin-bottom: 173px;
+    }
+}

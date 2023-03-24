@@ -1,0 +1,20 @@
+.menu_opened {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .menu_opened {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        padding: 40px 0;
+        border-bottom: 1px solid rgba(84, 84, 84, 0.7);
+    }
+
+    .menu_opened .header__link {
+        font-size: 18px;
+        line-height: 22px;
+    }
+}

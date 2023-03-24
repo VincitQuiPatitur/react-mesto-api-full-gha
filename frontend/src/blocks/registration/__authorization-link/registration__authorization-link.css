@@ -1,0 +1,12 @@
+.registration__authorization-link {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+    color: #fff;
+    text-decoration: none;
+}
+
+.registration__authorization-link:hover {
+    text-decoration: underline;
+}

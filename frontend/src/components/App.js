@@ -10,8 +10,21 @@ import {api} from '../utils/api';
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
 import AddPlacePopup from "./AddPlacePopup";
 import DeletePlacePopup from "./DeletePlacePopup";
+import {Routes, Route, Navigate, useNavigate} from "react-router-dom";
+import BurgerMenu from "./BurgerMenu";
+import ProtectedRoute from "./ProtectedRoute";
+import Login from "./Login";
+import Register from "./Register";
+import * as auth from '../utils/auth.js';
 
 function App() {
+    const [isRegisterOk, setRegisterOk] = useState(false);
+    const [isLoggedIn, setLoggedIn] = useState(false);
+    const [email, setEmail] = useState('');
+    const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
+    const [isBurgerMenuOpen, setBurgerMenuOpen] = useState(false);
+    const navigate = useNavigate();
+
     const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
     const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
     const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
@@ -23,15 +36,73 @@ function App() {
     const [isLoaded, setIsLoaded] = useState(false);
     const [selectedCardForDeletion, setSelectedCardForDeletion] = useState({});
 
-    useEffect(() => {
-        api.getUserInfo()
-            .then(result => setCurrentUser(result))
-            .catch(error => console.log(error));
+    function handleRegister({email, password}) {
+        return auth.register(email, password)
+            .then(() => {
+                setRegisterOk(true);
+                setInfoTooltipOpen(true);
+                navigate('/sign-in');
+            })
+            .catch(err => {
+                console.log(`Ошибка в процессе регистрации пользователя на сайте: ${err}`);
+                setInfoTooltipOpen(true);
+            });
+    }
 
-        api.getInitialCards()
-            .then(cards => setCards([...cards]))
-            .catch(error => console.log(error));
+    function handleLogin({email, password}) {
+        return auth.authorize(email, password)
+            .then(data => {
+                if (data.token) {
+                    localStorage.setItem('jwt', data.token);
+                    setEmail(email);
+                    setLoggedIn(true);
+                    navigate('/');
+                }
+            })
+            .catch(err => {
+                setInfoTooltipOpen(true);
+                console.log(`Ошибка в процессе авторизации пользователя на сайте: ${err}`);
+            });
+    }
+
+    function tokenCheck() {
+        const jwt = localStorage.getItem('jwt');
+        if (jwt) {
+            auth.getContent(jwt)
+                .then(res => {
+                    setEmail(res.data.email);
+                    setLoggedIn(true);
+                    navigate('/');
+                })
+                .catch(err => {
+                    console.log(`Ошибка в процессе проверки токена: ${err}`);
+                });
+        }
+    }
+
+    useEffect(() => {
+        tokenCheck();
     }, []);
+
+
+    useEffect(() => {
+        Promise.all([api.getInitialCards(), api.getUserInfo()])
+            .then(([cards, userInformation]) => {
+                setCurrentUser(userInformation);
+                setCards([...cards]);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }, []);
+
+    function signOut() {
+        localStorage.removeItem('jwt');
+        setEmail('');
+        setLoggedIn(false);
+        document.querySelector('#burger_menu').classList.replace('menu_opened', 'menu');
+        /*document.querySelector('.burger_button').classList.remove('header__menu_active');*/
+    }
 
     function handleEditAvatarClick() {
         setEditAvatarPopupOpen(true);
@@ -53,6 +124,10 @@ function App() {
     function handleCardClick(card) {
         setSelectedCard(card);
         setImagePopupOpen(true);
+    }
+
+    function toggleBurgerMenuClick() {
+        setBurgerMenuOpen(!isBurgerMenuOpen);
     }
 
     function handleCardLike(card) {
@@ -115,22 +190,61 @@ function App() {
         setImagePopupOpen(false);
         setSelectedCard({});
         setSelectedCardForDeletion({});
+        setInfoTooltipOpen(false);
     }
 
     return (
         <CurrentUserContext.Provider value={currentUser}>
             <div className="page">
                 <div className="page__content">
-                    <Header/>
-                    <Main
-                        onEditProfile={handleEditProfileClick}
-                        onAddPlace={handleAddPlaceClick}
-                        onEditAvatar={handleEditAvatarClick}
-                        onCardClick={handleCardClick}
-                        onCardLike={handleCardLike}
-                        onCardDelete={handleDeletePlaceClick /*handleCardDelete*/}
-                        cards={cards}
+                    <BurgerMenu
+                        isActive={isBurgerMenuOpen}
+                        email={email}
+                        signOut={signOut}
+                        loggedIn={isLoggedIn}
                     />
+                    <Header
+                        onClick={toggleBurgerMenuClick}
+                        isActive={isBurgerMenuOpen}
+                        email={email}
+                        signOut={signOut}
+                        loggedIn={isLoggedIn}
+                    />
+                    <Routes>
+                        <Route
+                            path='/'
+                            element={<ProtectedRoute
+                                component={Main}
+                                loggedIn={isLoggedIn}
+                                onEditProfile={handleEditProfileClick}
+                                onAddPlace={handleAddPlaceClick}
+                                onEditAvatar={handleEditAvatarClick}
+                                onCardClick={handleCardClick}
+                                onCardLike={handleCardLike}
+                                onCardDelete={handleDeletePlaceClick}
+                                cards={cards}
+                            />}/>
+                        <Route
+                            path='/sign-up'
+                            element={<Register
+                                handleRegister={handleRegister}
+                                isOpen={isInfoTooltipOpen}
+                                onClose={closeAllPopups}
+                                isRegisterOk={isRegisterOk}
+                            />}/>
+                        <Route
+                            path='/sign-in'
+                            element={<Login
+                                handleLogin={handleLogin}
+                                isOpen={isInfoTooltipOpen}
+                                onClose={closeAllPopups}
+                                isRegisterOk={isRegisterOk}
+                            />}/>
+                        <Route
+                            path='*'
+                            element={isLoggedIn ? <Navigate to='/'/> : <Navigate to='/sign-in'/>}
+                        />
+                    </Routes>
                     <Footer/>
                     <EditProfilePopup
                         isOpen={isEditProfilePopupOpen}
@@ -144,14 +258,12 @@ function App() {
                         onAddNewCard={handleAddPlaceSubmit}
                         isLoaded={isLoaded}
                     />
-
                     <DeletePlacePopup
                         isOpen={isDeleteImagePopupOpen}
                         onClose={closeAllPopups}
                         onCardDeletion={handleCardDelete}
                         card={selectedCardForDeletion}
                     />
-
                     <EditAvatarPopup
                         isOpen={isEditAvatarPopupOpen}
                         onClose={closeAllPopups}
