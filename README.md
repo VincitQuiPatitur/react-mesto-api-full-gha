@@ -8,7 +8,7 @@
 
 ## Ссылки на проект
 
-IP-адрес 158.160.47.98
+IP 158.160.47.98
 
 Frontend https://mesto.kostrova.nomoredomains.work
 
