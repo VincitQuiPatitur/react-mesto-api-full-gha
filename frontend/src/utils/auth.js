@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://auth.nomoreparties.co';
+export const BASE_URL = 'https://api.mesto.kostrova.nomoredomains.work';
 
 const getResponse = (res) => {
     return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
@@ -38,8 +38,8 @@ export const getContent = (token) => {
     return fetch(`${BASE_URL}/users/me`, {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
         },
     })
         .then(res => getResponse(res))
