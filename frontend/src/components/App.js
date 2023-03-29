@@ -36,6 +36,36 @@ function App() {
     const [isLoaded, setIsLoaded] = useState(false);
     const [selectedCardForDeletion, setSelectedCardForDeletion] = useState({});
 
+    const jwt = localStorage.getItem('jwt');
+
+    useEffect(() => {
+        if (jwt) {
+            auth.getContent(jwt)
+                .then(res => {
+                    setEmail(res.email);
+                    setLoggedIn(true);
+                    navigate('/');
+                })
+                .catch(err => {
+                    console.log(`Ошибка в процессе проверки токена: ${err}`);
+                });
+        }
+    }, [navigate, jwt]);
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            Promise.all([api.getInitialCards(), api.getUserInfo()])
+                .then(([cards, userInformation]) => {
+                    setCurrentUser(userInformation);
+                    setCards([...cards]);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+
+    }, [isLoggedIn]);
+
     function handleRegister({email, password}) {
         return auth.register(email, password)
             .then(() => {
@@ -65,43 +95,11 @@ function App() {
             });
     }
 
-    function tokenCheck() {
-        const jwt = localStorage.getItem('jwt');
-        if (jwt) {
-            auth.getContent(jwt)
-                .then(res => {
-                    setEmail(res.data.email);
-                    setLoggedIn(true);
-                    navigate('/');
-                })
-                .catch(err => {
-                    console.log(`Ошибка в процессе проверки токена: ${err}`);
-                });
-        }
-    }
-
-    useEffect(() => {
-        tokenCheck();
-    }, []);
-
-
-    useEffect(() => {
-        Promise.all([api.getInitialCards(), api.getUserInfo()])
-            .then(([cards, userInformation]) => {
-                setCurrentUser(userInformation);
-                setCards([...cards]);
-            })
-            .catch(error => {
-                console.log(error);
-            });
-    }, []);
-
     function signOut() {
         localStorage.removeItem('jwt');
         setEmail('');
         setLoggedIn(false);
         document.querySelector('#burger_menu').classList.replace('menu_opened', 'menu');
-        /*document.querySelector('.burger_button').classList.remove('header__menu_active');*/
     }
 
     function handleEditAvatarClick() {
@@ -131,7 +129,7 @@ function App() {
     }
 
     function handleCardLike(card) {
-        const isLiked = card.likes.some(i => i._id === currentUser._id);
+        const isLiked = card.likes.some(i => i === currentUser._id);
 
         api.changeLikeCardStatus(card._id, isLiked)
             .then((newCard) => {

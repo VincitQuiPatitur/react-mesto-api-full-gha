@@ -8,9 +8,8 @@ const { errors } = require('celebrate');
 
 const router = require('./routes/index');
 const { errorHandler } = require('./middlewares/errorHandler');
-const NotFoundError = require('./errors/NotFoundError');
-// mongodb://127.0.0.1:27017/mestodb
-const { PORT = 3000, MONGO_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
+
+const { PORT = 3001, MONGO_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const cors = require('./middlewares/cors');
 
@@ -19,7 +18,7 @@ mongoose.connect(MONGO_URL);
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  max: 1000, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
 }); // за 15мин мах 100 запросов, потом выведется сообщение о превышении лимита
 
 const app = express();
@@ -39,9 +38,6 @@ app.get('/crash-test', () => {
 }); // удалить после ревью
 app.use(router);
 app.use(errorLogger);
-app.use((req, res, next) => {
-  next(new NotFoundError('The page or resource you\'re looking for can\'t be found'));
-});
 app.use(errors());
 app.use(errorHandler);
 

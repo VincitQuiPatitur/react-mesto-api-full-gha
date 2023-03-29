@@ -35,7 +35,7 @@ module.exports.deleteCard = (req, res, next) => {
         next(new NotFoundError('Card with specified id not found'));
         return;
       }
-      if (userId !== card.owner._id.toString()) {
+      if (userId !== card.owner.toString()) {
         next(new ForbiddenError('You can\'t delete this card'));
         return;
       }
@@ -60,10 +60,10 @@ module.exports.likeCard = (req, res, next) => {
 
   Card.findByIdAndUpdate(cardId, { $addToSet: { likes: userId } }, { new: true })
     .then((card) => {
-      if (!card) {
+      /* if (!card) {
         next(new NotFoundError('Card with specified id not found'));
         return;
-      }
+      } */
       res.send(card);
     })
     .catch((err) => {
@@ -81,10 +81,10 @@ module.exports.dislikeCard = (req, res, next) => {
 
   Card.findByIdAndUpdate(cardId, { $pull: { likes: userId } }, { new: true })
     .then((card) => {
-      if (!card) {
+      /* if (!card) {
         next(new NotFoundError('Card with specified id not found'));
         return;
-      }
+      } */
       res.send(card);
     })
     .catch((err) => {
