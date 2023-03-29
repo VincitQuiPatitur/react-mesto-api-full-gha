@@ -8,14 +8,8 @@ const { errors } = require('celebrate');
 
 const router = require('./routes/index');
 const { errorHandler } = require('./middlewares/errorHandler');
-<<<<<<< HEAD
 
-const { PORT = 3001, MONGO_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
-=======
-const NotFoundError = require('./errors/NotFoundError');
-// mongodb://127.0.0.1:27017/mestodb
 const { PORT = 3000, MONGO_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
->>>>>>> 2df04f8b90098105c3e9d0d1d3a0229ced82a0a4
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const cors = require('./middlewares/cors');
 
