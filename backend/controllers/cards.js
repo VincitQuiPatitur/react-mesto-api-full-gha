@@ -60,10 +60,10 @@ module.exports.likeCard = (req, res, next) => {
 
   Card.findByIdAndUpdate(cardId, { $addToSet: { likes: userId } }, { new: true })
     .then((card) => {
-      /* if (!card) {
+      if (!card) {
         next(new NotFoundError('Card with specified id not found'));
         return;
-      } */
+      }
       res.send(card);
     })
     .catch((err) => {
@@ -81,10 +81,10 @@ module.exports.dislikeCard = (req, res, next) => {
 
   Card.findByIdAndUpdate(cardId, { $pull: { likes: userId } }, { new: true })
     .then((card) => {
-      /* if (!card) {
+      if (!card) {
         next(new NotFoundError('Card with specified id not found'));
         return;
-      } */
+      }
       res.send(card);
     })
     .catch((err) => {
